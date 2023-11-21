@@ -1,4 +1,4 @@
-package com.dl.sample.minio.utils;
+package com.dl.minio.utils;
 import io.minio.MinioClient;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

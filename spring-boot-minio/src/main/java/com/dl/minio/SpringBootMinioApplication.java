@@ -1,13 +1,13 @@
-package com.dl.str;
+package com.dl.minio;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StringOperationDemoApplication {
+public class SpringBootMinioApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StringOperationDemoApplication.class, args);
+		SpringApplication.run(SpringBootMinioApplication.class, args);
 	}
 
 }
