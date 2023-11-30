@@ -349,9 +349,13 @@ public class MinioUtil {
     @SneakyThrows(Exception.class)
     public String getUploadObjectUrl(String bucketName, String objectName, Integer expires) {
         return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                .method(Method.PUT).bucket(bucketName)
-                .object(objectName).expiry(expires).build());
+                .method(Method.GET)
+                .bucket(bucketName)
+                .object(objectName)
+                .expiry(expires)
+                .build());
     }
+
 
     /**
      * 下载文件
