@@ -44,7 +44,7 @@ public class MinioUtil {
     /**
      * description: 判断bucket是否存在，不存在则创建
      *
-     * @return: void
+     * @param name 名称
      */
     public void existBucket(String name) {
         try {
@@ -61,7 +61,7 @@ public class MinioUtil {
      * 创建存储bucket
      *
      * @param bucketName 存储bucket名称
-     * @return Boolean
+     * @return {@link Boolean}
      */
     public Boolean makeBucket(String bucketName) {
         try {
@@ -76,10 +76,11 @@ public class MinioUtil {
     }
 
     /**
+     * 移除铲斗
      * 删除存储bucket
      *
      * @param bucketName 存储bucket名称
-     * @return Boolean
+     * @return {@link Boolean}
      */
     public Boolean removeBucket(String bucketName) {
         try {
@@ -94,9 +95,11 @@ public class MinioUtil {
     }
 
     /**
+     * 上载
      * description: 上传文件     *
-     * @param multipartFile
-     * @return: java.lang.String
+     *
+     * @param multipartFile 多部件文件
+     * @return {@link List}<{@link String}>
      */
     public List<String> upload(MultipartFile[] multipartFile) {
         return upload(multipartFile, bucketName,"");
@@ -109,11 +112,14 @@ public class MinioUtil {
     public List<String> upload(MultipartFile[] multipartFile,String filePath) {
         return upload(multipartFile, bucketName,filePath);
     }
+
     /**
      * description: 上传文件
      *
-     * @param multipartFile
-     * @return: java.lang.String
+     * @param multipartFile 多部件文件
+     * @param bucketName    bucket名称
+     * @param filePath      文件路径
+     * @return {@link List}<{@link String}>
      */
     public List<String> upload(MultipartFile[] multipartFile, String bucketName,String filePath) {
         List<String> names = new ArrayList<>(multipartFile.length);
@@ -162,8 +168,8 @@ public class MinioUtil {
     /**
      * description: 下载文件
      *
-     * @param fileName
-     * @return: org.springframework.http.ResponseEntity<byte [ ]>
+     * @param fileName 文件名
+     * @return {@link ResponseEntity}<{@link byte[]}>
      */
     public ResponseEntity<byte[]> download(String fileName) {
         ResponseEntity<byte[]> responseEntity = null;
@@ -236,6 +242,7 @@ public class MinioUtil {
      *
      * @param bucketName 存储bucket名称
      * @param objects    对象名称集合
+     * @return {@link Iterable}<{@link Result}<{@link DeleteError}>>
      */
     public Iterable<Result<DeleteError>> removeObjects(String bucketName, List<String> objects) {
         List<DeleteObject> dos = objects.stream().map(e -> new DeleteObject(e)).collect(Collectors.toList());
@@ -245,6 +252,9 @@ public class MinioUtil {
 
     /**
      * 判断桶是否存在
+     *
+     * @param bucketName bucket名称
+     * @return boolean
      */
     @SneakyThrows(Exception.class)
     public boolean bucketExists(String bucketName) {
@@ -269,6 +279,7 @@ public class MinioUtil {
      * 根据bucketName获取信息
      *
      * @param bucketName bucket名称
+     * @return {@link Optional}<{@link Bucket}>
      */
     @SneakyThrows(Exception.class)
     public Optional<Bucket> getBucket(String bucketName) {
@@ -295,6 +306,7 @@ public class MinioUtil {
      * @param bucketName 存储桶
      * @param objectName 对象名称
      * @param fileName   本地文件路径
+     * @return {@link ObjectWriteResponse}
      */
     @SneakyThrows(Exception.class)
     public ObjectWriteResponse putObject(String bucketName, String objectName, String fileName) {
@@ -310,6 +322,7 @@ public class MinioUtil {
      * @param bucketName  存储桶
      * @param objectName  文件对象
      * @param inputStream 文件流
+     * @return {@link ObjectWriteResponse}
      */
     @SneakyThrows(Exception.class)
     public ObjectWriteResponse putObject(String bucketName, String objectName, InputStream inputStream) {
@@ -318,8 +331,10 @@ public class MinioUtil {
         }
         return minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(inputStream, inputStream.available(), -1).build());
     }
+
     /**
      * 获取文件外链
+     *
      * @param objectName 文件名称
      * @return url
      */
@@ -343,11 +358,13 @@ public class MinioUtil {
      *
      * @param bucketName bucket名称
      * @param objectName 文件名称
-     * @param expires    过期时间
+     * @param expires    过期时间（秒）
      * @return url
      */
     @SneakyThrows(Exception.class)
     public String getUploadObjectUrl(String bucketName, String objectName, Integer expires) {
+        GetObjectResponse object = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
+
         return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                 .method(Method.GET)
                 .bucket(bucketName)
@@ -359,9 +376,10 @@ public class MinioUtil {
 
     /**
      * 下载文件
-     * bucketName:桶名
      *
-     * @param fileName: 文件名
+     * @param fileName:  文件名
+     * @param bucketName bucket名称
+     * @param response   回答
      */
     @SneakyThrows(Exception.class)
     public void download(String bucketName, String fileName, HttpServletResponse response) {
